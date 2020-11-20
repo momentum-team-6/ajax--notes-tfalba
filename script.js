@@ -2,47 +2,51 @@
 
 const url = 'http://localhost:3000/todos/'
 
-const formTodo = document.querySelector('#todo-form')
-const todoList = document.querySelector('#todo-list')
+const noteSave = document.querySelector('#save-note')
+const noteList = document.querySelector('#note-list')
 
 fetch(url)
   .then(res => res.json())
-  .then(data => {
-    for (let todo of data) {
-      renderTodoItem(todo)
+  .then(notes => {
+    for (let note of notes) {
+      if (note.item !== '') {
+        renderNote(note)
+      }
     }
   })
 
-formTodo.addEventListener('submit', function (event) {
+noteSave.addEventListener('click', function (event) {
   event.preventDefault()
-  const todoText = document.querySelector('#todo-text').value
-  const todoDetail = document.querySelector('#todo-detail').value
-  createTodo(todoText, todoDetail)
+  const noteHeader = document.querySelector('#note-header').value
+  const noteBody = document.querySelector('#note-body').value
+  createNote(noteHeader, noteBody)
 })
 
-function createTodo (todoText, todoDetail) {
+function createNote (noteHeader, noteBody) {
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      item: todoText,
-      detail: todoDetail,
+      item: noteHeader,
+      detail: noteBody,
       created_at: moment().format()
     })
   })
     .then(res => res.json())
     .then(data => {
-      renderTodoItem(data)
+      renderNote(data)
     })
 }
 
-function renderTodoItem (todoObj) {
-  const itemEl = document.createElement('li')
+function renderNote (todoObj) {
+  const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
+  itemEl.classList.add('note-header')
+  itemDetail.classList.add('note-body')
   itemEl.innerText = todoObj.item
   itemDetail.innerText = todoObj.detail
   // use innerHTML if want to use a template literal
-  todoList.appendChild(itemEl)
+  noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
 }
 

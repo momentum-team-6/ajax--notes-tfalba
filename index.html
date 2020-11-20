@@ -10,16 +10,22 @@
   <title>Notes</title>
 </head>
 <body>
-  <h1>Todos!</h1>
-  <form id="todo-form">
-    <label for="todo-text">Enter your todo item</label>
-    <input id="todo-text" type="text" placeholder="eat more guacamole">
-    <label for="todo-detail">Enter more details about your item here</label>
-    <input id="todo-detail" type="textarea" placeholder="guacamole is good for you">
-    <button id="save-todo" type="submit">Save Todo</button>
-  </form>
-  <section id="todos">
-    <ul id="todo-list"></ul>
+  <h1>Take Note!</h1>
+  <section id="note-form">
+    <!-- <label for="note-header">Note Header</label> -->
+    <div class="note-label">Note Header</div>
+    <input id="note-header" type="text" placeholder="title your note here">
+    <div class="note-label">Your Note</div>
+    <!-- <label for="note-body">Your Note</label> -->
+    <input id="note-body" type="textarea" placeholder="tell me what you want to say">
+    <button id="save-note" type="submit">Save Note</button>
+
+<!-- ----------------------- add a clear note button that will reload the page when clicked ------------------------ -->
+
+    <div id="section-break"></div>
+  </section>
+  <section id="notes">
+    <div id="note-list"></div>
   </section>
 </body>
 </html>
