@@ -4,10 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Notes</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="moment.min.js" defer></script>
   <script src="script.js" defer></script>
+  <title>Notes</title>
 </head>
 <body>
-  <h1>This will be my Notes App</h1>
+  <h1>Todos!</h1>
+  <form id="todo-form">
+    <label for="todo-text">Enter your todo item</label>
+    <input id="todo-text" type="text" placeholder="eat more guacamole">
+    <label for="todo-detail">Enter more details about your item here</label>
+    <input id="todo-detail" type="text" placeholder="guacamole is good for you">
+    <button id="save-todo" type="submit">Save Todo</button>
+  </form>
+  <section id="todos">
+    <ul id="todo-list"></ul>
+  </section>
+  <h1>Notes</h1>
+  <section id="notes">
+  <form id="notes-form">
+    <label for="notes-filter">Enter a header for your note</label>
+    <input id="notes-filter" type="text" placeholder="keyword or id">
+    <button id="enter-note" type="submit">Filter</button>
+  </form>
+  </section>
 </body>
 </html>
