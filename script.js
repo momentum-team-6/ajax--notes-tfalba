@@ -8,9 +8,14 @@ const noteList = document.querySelector('#note-list')
 fetch(url)
   .then(res => res.json())
   .then(notes => {
-    for (let note of notes) {
-      if (note.item !== '') {
-        renderNote(note)
+    // for (let note of notes) {
+    //   if (note.item !== '') {
+    //     renderNote(note)
+    //   }
+    // }
+    for (let i = notes.length - 1; i >= 0; i--) {
+      if (notes[i].item !== '') {
+        renderNote(notes[i])
       }
     }
   })
@@ -36,6 +41,7 @@ function createNote (noteHeader, noteBody) {
     .then(data => {
       renderNote(data)
     })
+  document.location.reload()
 }
 
 function renderNote (todoObj) {
@@ -43,10 +49,9 @@ function renderNote (todoObj) {
   const itemDetail = document.createElement('div')
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
-  itemEl.innerText = todoObj.item
-  itemDetail.innerText = todoObj.detail
+  itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times'></i><i class='fas fa-edit'></i>`
+  itemDetail.innerHTML = `${todoObj.detail}<br><br><br>Created at: ${todoObj.created_at}`
   // use innerHTML if want to use a template literal
   noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
 }
-
