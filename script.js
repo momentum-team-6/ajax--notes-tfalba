@@ -1,6 +1,6 @@
 /* globals fetch, moment */
 
-const url = 'http://localhost:3000/todos/'
+const url = 'http://localhost:3000/notes/'
 
 const noteSave = document.querySelector('#save-note')
 const noteList = document.querySelector('#note-list')
@@ -48,10 +48,36 @@ function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
   itemEl.classList.add('note-header')
+  itemEl.classList.add('delete')
   itemDetail.classList.add('note-body')
-  itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times'></i><i class='fas fa-edit'></i>`
+  // debugger
+  itemEl.id = todoObj.id
+  itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit'></i>`
   itemDetail.innerHTML = `${todoObj.detail}<br><br><br>Created at: ${todoObj.created_at}`
   // use innerHTML if want to use a template literal
   noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
 }
+
+function deleteNote (eventTarget) {
+  console.log(eventTarget.parentElement)
+  const noteId = eventTarget.parentElement.id
+  // debugger
+  fetch(`http://localhost:3000/notes/${noteId}`, {
+    method: 'DELETE'
+  })
+    .then(function(res) {
+      return res.json()
+    })
+    .then(function(data) {
+      console.log(data)
+    })
+}
+
+noteList.addEventListener('click', function (event) {
+  // console.log(event.target.parentElement)
+  if (event.target.classList.contains('delete')) {
+    deleteNote(event.target)
+  }
+})
+
