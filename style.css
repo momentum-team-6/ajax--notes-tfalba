@@ -9,6 +9,18 @@ h1 {
   padding-left: 100px;
 }
 
+#top-section {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#side-bar {
+  display: flex;
+  flex-basis: 300px;
+  background-color: lightcoral;
+  padding-left: 20px;
+  border-radius: 7px;
+}
 #section-break {
   height: 3px;
   background-color: lightcoral;
@@ -32,6 +44,7 @@ h1 {
 #note-form {
   display: flex;
   flex-direction: column;
+  flex-basis: 500px;
 }
 
 #note-header {
@@ -67,6 +80,13 @@ h1 {
   padding: 5px;
   background-color: #f4efefeb;
   border-radius: 7px;
+}
+#side-bar .note-header {
+  max-height: 200px;
+  width: 300px;
+}
+#side-bar .note-body {
+  min-height: 150px;
 }
 .note-header i {
   /* display: flex;
