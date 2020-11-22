@@ -120,26 +120,6 @@ h1 {
   margin: 2px 100px 2px 100px;
 }
 
-#tag1, #tag2, #tag3, .tag1, .tag2, .tag3 {
-  display: flex;
-  width: 60px;
-  height: 15px;
-  font-size: 11px;
-  border: 2px solid lightcoral;
-  background-color: whitesmoke;
-  border-radius: 4px;
-  margin: 0 5px 2px 0px;
-  padding-left: 3px;
-}
-.tags {
-  margin-left: 3px;
-}
-
-.tag1, .tag2, .tag3 {
-  background-color: lightcoral;
-  margin-top: 2px;
-}
-
 .time-created {
   font-size: 12px;
   text-align: right;
