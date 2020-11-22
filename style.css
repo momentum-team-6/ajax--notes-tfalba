@@ -82,6 +82,10 @@ h1 {
   background-color: #f4efefeb;
   border-radius: 7px;
 }
+
+.note-header:hover {
+  background-color: rgba(238, 187, 187, 0.568);
+}
 #side-bar .note-header {
   max-height: 200px;
   width: 300px;
