@@ -25,17 +25,23 @@ noteSave.addEventListener('click', function (event) {
   event.preventDefault()
   const noteHeader = document.querySelector('#note-header').value
   const noteBody = document.querySelector('#note-body').value
-  createNote(noteHeader, noteBody)
+  const tag1 = document.querySelector('#tag1').value
+  const tag2 = document.querySelector('#tag2').value
+  const tag3 = document.querySelector('#tag3').value
+  createNote(noteHeader, noteBody, tag1, tag2, tag3)
 })
 
-function createNote (noteHeader, noteBody) {
+function createNote (noteHeader, noteBody, tag1, tag2, tag3) {
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       item: noteHeader,
       detail: noteBody,
-      created_at: moment().format()
+      created_at: moment().format(),
+      tag1: tag1,
+      tag2: tag2,
+      tag3: tag3
     })
   })
     .then(res => res.json())
@@ -48,14 +54,40 @@ function createNote (noteHeader, noteBody) {
 function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
+  const itemCreated = document.createElement('div')
+  
+  // const itemTag1 = document.createElement('div')
+  // const itemTag2 = document.createElement('div')
+  // const itemTag3 = document.createElement('div')
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
+  itemCreated.classList.add('time-created')
+  
+  // itemTag1.classList.add('tags', 'tag1')
+  // itemTag2.classList.add('tags', 'tag2')
+  // itemTag3.classList.add('tags', 'tag3')
 
   itemEl.id = todoObj.id
   itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
-  itemDetail.innerHTML = `${todoObj.detail}<br><br><br>${todoObj.created_at}`
+  itemDetail.innerHTML = todoObj.detail
+  itemCreated.innerHTML = todoObj.created_at
+
+  // itemTag1.innerHTML = todoObj.tag1
+  // itemTag2.innerHTML = todoObj.tag2
+  // itemTag3.innerHTML = todoObj.tag3
   noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
+  if (todoObj.tag1 !== undefined && todoObj.tag1 !== '') {
+    const itemTags = document.createElement('div')
+    itemTags.classList.add('tags')
+    itemTags.innerHTML = `<div class="tag1">${todoObj.tag1}</div><div class="tag2">${todoObj.tag2}</div><div class="tag3">${todoObj.tag3}</div>`
+    itemEl.appendChild(itemTags)
+  }
+  itemEl.appendChild(itemCreated)
+
+  // itemEl.appendChild(itemTag1)
+  // itemEl.appendChild(itemTag2)
+  // itemEl.appendChild(itemTag3)
 }
 
 function deleteNote (eventTarget) {
