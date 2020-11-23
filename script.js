@@ -49,6 +49,7 @@ function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
   const itemCreated = document.createElement('div')
+  
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
   itemCreated.classList.add('time-created')
@@ -86,49 +87,62 @@ noteList.addEventListener('click', function (event) {
   }
 })
 
+// noteSave.addEventListener('click', function (event) {
+//   event.preventDefault()
+//   const noteHeader = document.querySelector('#note-header').value
+//   const noteBody = document.querySelector('#note-body').value
+//   createNote(noteHeader, noteBody)
+// })
+
 noteList.addEventListener('click', function (event) {
   if (event.target.classList.contains('edit')) {
-    editNote(event.target)
+    console.log(event.target)
+    console.log(event.target.parentElement)
+    const noteId = event.target.parentElement.id
+    const noteHeader = document.querySelector('#note-header').value
+    const noteBody = document.querySelector('#note-body').value
+    editNote(noteHeader, noteBody, noteId)
   }
 })
 
 function renderEdit (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
+  const itemModified = document.createElement('div')
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
+  itemModified.classList.add('time-modified')
+  // itemEl.id = todoObj.id
+  itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
+  itemDetail.innerHTML = todoObj.detail
+  itemModified.innerHTML = todoObj.modified_at
 
-  itemEl.id = todoObj.id
-  itemEl.innerHTML = todoObj.item
-  itemDetail.innerHTML = `${todoObj.detail}<br><br><br>Created at: ${todoObj.created_at}`
-  sideBar.appendChild(itemEl)
+  noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
+  itemEl.appendChild(itemModified)
+  debugger
 }
 
-function editNote (eventTarget) {
-  console.log(eventTarget)
-  console.log(eventTarget.parentElement)
-  const noteId = eventTarget.parentElement.id
+function editNote (noteHeader, noteBody, noteId) {
+
   console.log(noteId)
 
-fetch(`http://localhost:3000/notes/${noteId}`)
-.then(res => res.json())
-.then(data => {
-  renderEdit(data)
-})
+// const url = 'http://localhost:3000/notes/49'
 
-  // renderEdit (eventTarget.parentElement)
-  // debugger
+  fetch(`http://localhost:3000/notes/${noteId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      item: noteHeader,
+      detail: noteBody,
+      modified_at: moment().format()
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
 
-
-  // fetch(`http://localhost:3000/notes/${noteId}`, {
-  //   method: 'DELETE'
-  // })
-  //   .then(function(res) {
-  //     return res.json()
-  //   })
-  //   .then(function(data) {
-  //     console.log(data)
-  //   })
-  // document.location.reload()
+    
+    renderEdit(data)
+    console.log(data)
+  })
 }
