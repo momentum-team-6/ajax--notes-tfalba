@@ -1,19 +1,15 @@
 /* globals fetch, moment */
-
 const url = 'http://localhost:3000/notes/'
-
 const noteSave = document.querySelector('#save-note')
 const noteList = document.querySelector('#note-list')
+const noteHeader = document.querySelector('#note-header')
+const noteBody = document.querySelector('#note-body')
 const sideBar = document.querySelector('#side-bar')
+const noteUpdate = document.querySelector('#update-note')
 
 fetch(url)
   .then(res => res.json())
   .then(notes => {
-    // for (let note of notes) {
-    //   if (note.item !== '') {
-    //     renderNote(note)
-    //   }
-    // }
     for (let i = notes.length - 1; i >= 0; i--) {
       if (notes[i].item !== '') {
         renderNote(notes[i])
@@ -21,12 +17,37 @@ fetch(url)
     }
   })
 
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*                                                   Event Listeners                                                  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
 noteSave.addEventListener('click', function (event) {
   event.preventDefault()
-  const noteHeader = document.querySelector('#note-header').value
-  const noteBody = document.querySelector('#note-body').value
-  createNote(noteHeader, noteBody)
+  const noteHeaderValue = noteHeader.value
+  const noteBodyValue = noteBody.value
+  createNote(noteHeaderValue, noteBodyValue)
 })
+
+
+noteList.addEventListener('click', function (event) {
+  // console.log(event.target.parentElement)
+  if (event.target.classList.contains('delete')) {
+    deleteNote(event.target)
+  }
+  if (event.target.classList.contains('edit')) {
+    editNote(event.target)
+    // Need to change editNote to take as argument event.target rather than noteId
+    // this function should basically change what is viewed in display to the content of the note.
+  }
+  if (event.target.classList.contains('updated')) {
+    updateNote(event.target)
+    // write a function updateNote which will run the PATCH
+  }
+})
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*                                                    JSON Fetches                                                    */
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 function createNote (noteHeader, noteBody) {
   fetch(url, {
@@ -45,12 +66,77 @@ function createNote (noteHeader, noteBody) {
   document.location.reload()
 }
 
+function deleteNote (eventTarget) {
+  console.log(eventTarget.parentElement)
+  const noteId = eventTarget.parentElement.id
+  // debugger
+  alert('Are you sure you want to delete this message? Skip the "OK" and reload page if not.')
+  fetch(`http://localhost:3000/notes/${noteId}`, {
+    method: 'DELETE'
+  })
+    .then(function(res) {
+      return res.json()
+    })
+    .then(function(data) {
+      console.log(data)
+      eventTarget.parentElement.remove()
+    })
+}
+
+function editNote (eventTarget) {
+  console.log(eventTarget.parentElement)
+  const noteId = eventTarget.parentElement.id
+
+  const url = `http://localhost:3000/notes/${noteId}`
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      noteHeader.value = data.item
+      noteBody.value = data.detail
+    })
+  noteUpdate.addEventListener('click', function (event) {
+    event.preventDefault()
+    let noteHeaderValue = noteHeader.value
+    let noteBodyValue = noteBody.value
+    updateNote(noteHeaderValue, noteBodyValue, noteId)
+  })
+}
+// Add to above something that will generate an update note button instead of save - has a class of update for the event listener
+// event listener will call the next function called updateNote which will do the PATCH and change the innerHTML to the new value
+// update event also has to clear the note-header and note-body values to empty.
+
+// ADD THIS AS PART OF WHAT TO DO WHEN CLICK SAVE
+
+function updateNote (noteHeader, noteBody, noteId) {
+  fetch(`http://localhost:3000/notes/${noteId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      item: noteHeader,
+      detail: noteBody,
+      modified_at: moment().format()
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      renderNote(data)
+      // instead of rendering note here, just manipulate DOM
+      console.log(data)
+    })
+    noteHeader = ''
+    noteBody = ''
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/*                                                  DOM Manipulation                                                  */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
 function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
   const itemCreated = document.createElement('div')
   const itemModified = document.createElement('div')
-  
+
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
   itemCreated.classList.add('time-created')
@@ -65,93 +151,4 @@ function renderNote (todoObj) {
   itemEl.appendChild(itemDetail)
   itemEl.appendChild(itemCreated)
   itemEl.appendChild(itemModified)
-}
-
-function deleteNote (eventTarget) {
-  console.log(eventTarget.parentElement)
-  const noteId = eventTarget.parentElement.id
-  // debugger
-  alert ('Are you sure you want to delete this message? Skip the "OK" and reload page if not.')
-  fetch(`http://localhost:3000/notes/${noteId}`, {
-    method: 'DELETE'
-  })
-    .then(function(res) {
-      return res.json()
-    })
-    .then(function(data) {
-      console.log(data)
-    })
-  document.location.reload()
-}
-
-noteList.addEventListener('click', function (event) {
-  // console.log(event.target.parentElement)
-  if (event.target.classList.contains('delete')) {
-    deleteNote(event.target)
-  }
-})
-
-// noteSave.addEventListener('click', function (event) {
-//   event.preventDefault()
-//   const noteHeader = document.querySelector('#note-header').value
-//   const noteBody = document.querySelector('#note-body').value
-//   createNote(noteHeader, noteBody)
-// })
-
-noteList.addEventListener('click', function (event) {
-  if (event.target.classList.contains('edit')) {
-    console.log(event.target)
-    console.log(event.target.parentElement)
-    const noteId = event.target.parentElement.id
-    const noteHeader = document.querySelector('#note-header').value
-    const noteBody = document.querySelector('#note-body').value
-    editNote(noteHeader, noteBody, noteId)
-  }
-})
-
-function renderEdit (todoObj) {
-  const itemEl = document.createElement('div')
-  const itemDetail = document.createElement('div')
-  const itemModified = document.createElement('div')
-  itemEl.classList.add('note-header')
-  itemDetail.classList.add('note-body')
-  itemModified.classList.add('time-modified')
-  // itemEl.id = todoObj.id
-  itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
-  itemDetail.innerHTML = todoObj.detail
-  itemModified.innerHTML = todoObj.modified_at
-
-  noteList.appendChild(itemEl)
-  itemEl.appendChild(itemDetail)
-  itemEl.appendChild(itemModified)
-  debugger
-}
-
-// Go back to earlier version where had listener for edit and had display up on right
-// Need some way of bringing up current version of note... pausing and allowing for
-// content to be added
-
-function editNote (noteHeader, noteBody, noteId) {
-
-  console.log(noteId)
-
-// const url = 'http://localhost:3000/notes/49'
-
-  fetch(`http://localhost:3000/notes/${noteId}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      // item: noteHeader,
-      // try not including header so only body will change
-      detail: noteBody,
-      modified_at: moment().format()
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    
-    renderEdit(data)
-    console.log(data)
-  })
 }

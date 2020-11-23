@@ -120,16 +120,16 @@ h1 {
   margin: 2px 100px 2px 100px;
 }
 
-.time-created {
+.time-created, .time-modified {
   font-size: 12px;
   text-align: right;
 }
 
-#save-note, #clear-note {
+#save-note, #update-note {
   width: 100px;
   border: 3px solid lightcoral;
   background-color: lightcoral;
-  font-size: 16px;
+  font-size: 14px;
   border-radius: 7px;
   margin-top: 5px;
   display: flex;
@@ -137,6 +137,9 @@ h1 {
   margin-right: 20px;
 }
 
+.hideme {
+  display: none;
+}
 .buttons {
   display: flex;
   flex-direction: row;
