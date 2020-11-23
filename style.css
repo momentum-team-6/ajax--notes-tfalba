@@ -5,7 +5,7 @@
 
 h1 {
   font-size: 30px;
-  background-color: lightcoral;
+  background-color: cornflowerblue;
   padding-left: 100px;
 }
 
@@ -17,20 +17,20 @@ h1 {
 #side-bar {
   display: flex;
   flex-basis: 300px;
-  background-color: lightcoral;
+  background-color: rgb(53, 55, 58);
   padding-left: 20px;
   border-radius: 7px;
 }
 #section-break {
   height: 3px;
-  background-color: lightcoral;
+  background-color: cornflowrgb(53, 55, 58)erblue;
   margin-top: 20px;
 }
 #note-body {
   display: flex;
   height: 150px;
-  width: 400px;
-  border: 4px solid lightcoral;
+  width: 600px;
+  border: 4px solid rgb(53, 55, 58);
   border-radius: 7px;
   font-size: 15px;
   background-color: whitesmoke;
@@ -45,7 +45,7 @@ h1 {
 #note-form {
   display: flex;
   flex-direction: column;
-  flex-basis: 500px;
+  flex-basis: 700px;
 }
 
 #note-header {
@@ -53,7 +53,7 @@ h1 {
   font-size: 20px;
     display: flex;
     margin: 2px 100px 0px 100px;
-    border: 3px solid lightcoral;
+    border: 3px solid rgb(53, 55, 58);
     border-radius: 7px;
     width: 400px;
     background-color: #f4efefeb;
@@ -61,11 +61,15 @@ h1 {
 
 .note-label {
   font-size: 25px;
-  color: lightcoral;
+  color: cornflowerblue;
   margin: 10px 100px 0px 100px;
+  font-weight: 600;
 }
 #notes {
-  background-color: lightcoral;
+
+  background-color: rgb(224, 228, 236);
+
+
 }
 #note-list {
   display: flex;
@@ -79,12 +83,15 @@ h1 {
   flex-wrap: wrap;
   flex-direction: column; */
   padding: 5px;
-  background-color: #f4efefeb;
+  border: 3px solid cornflowerblue;
+ 
+  background-color: #6495ed6e;
   border-radius: 7px;
 }
 
 .note-header:hover {
-  background-color: rgba(238, 187, 187, 0.568);
+  background-color: rgba(100, 148, 237, 0.76);
+  border: 3px solid black;
 }
 #side-bar .note-header {
   max-height: 200px;
@@ -110,14 +117,9 @@ h1 {
   flex-direction: row;
   flex-wrap: wrap;
   border-radius: 4px;
-  min-height: 100px;
-  max-width: 350px;
-}
-
-
-#tags, .tags {
-  display: flex;
-  margin: 2px 100px 2px 100px;
+  /* min-height: 100px;
+  max-width: 350px; */
+  margin-bottom: 4px;
 }
 
 .time-created, .time-modified {
@@ -125,24 +127,33 @@ h1 {
   text-align: right;
 }
 
-#save-note, #update-note {
-  width: 100px;
-  border: 3px solid lightcoral;
-  background-color: lightcoral;
-  font-size: 14px;
+.save-note, .update-note {
+  width: 120px;
+  border: 3px solid cornflowerblue;
+  background-color: cornflowerblue;
+  font-size: 17px;
   border-radius: 7px;
   margin-top: 5px;
   display: flex;
   flex-wrap: wrap;
   margin-right: 20px;
+  margin-bottom: 5px;
+  justify-content: center;
+  font-weight: 600;
 }
 
-.hideme {
-  display: none;
-}
 .buttons {
   display: flex;
   flex-direction: row;
   width: 350px;
   margin-left: 100px;
+}
+
+.hideme {
+  display: none;
+}
+
+textarea {
+  width: 350px;
+  min-height: 200px;
 }

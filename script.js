@@ -1,11 +1,11 @@
 /* globals fetch, moment */
 const url = 'http://localhost:3000/notes/'
-const noteSave = document.querySelector('#save-note')
+const noteSave = document.querySelector('.save-note')
 const noteList = document.querySelector('#note-list')
 const noteHeader = document.querySelector('#note-header')
 const noteBody = document.querySelector('#note-body')
 const sideBar = document.querySelector('#side-bar')
-const noteUpdate = document.querySelector('#update-note')
+const noteUpdate = document.querySelector('.update-note')
 
 fetch(url)
   .then(res => res.json())
@@ -27,7 +27,6 @@ noteSave.addEventListener('click', function (event) {
   const noteBodyValue = noteBody.value
   createNote(noteHeaderValue, noteBodyValue)
 })
-
 
 noteList.addEventListener('click', function (event) {
   // console.log(event.target.parentElement)
@@ -56,28 +55,26 @@ function createNote (noteHeader, noteBody) {
     body: JSON.stringify({
       item: noteHeader,
       detail: noteBody,
-      created_at: moment().format()
+      created_at: moment().format('lll')
     })
   })
     .then(res => res.json())
     .then(data => {
       renderNote(data)
+      clearInputs()
     })
-  document.location.reload()
+  // document.location.reload()
 }
 
 function deleteNote (eventTarget) {
   console.log(eventTarget.parentElement)
   const noteId = eventTarget.parentElement.id
-  // debugger
-  alert('Are you sure you want to delete this message? Skip the "OK" and reload page if not.')
+  // alert('Are you sure you want to delete this message? Skip the "OK" and reload page if not.')
   fetch(`http://localhost:3000/notes/${noteId}`, {
     method: 'DELETE'
   })
-    .then(function(res) {
-      return res.json()
-    })
-    .then(function(data) {
+    .then(res => res.json())
+    .then(data => {
       console.log(data)
       eventTarget.parentElement.remove()
     })
@@ -86,6 +83,9 @@ function deleteNote (eventTarget) {
 function editNote (eventTarget) {
   console.log(eventTarget.parentElement)
   const noteId = eventTarget.parentElement.id
+
+  noteSave.classList.toggle('hideme')
+  noteUpdate.classList.toggle('hideme')
 
   const url = `http://localhost:3000/notes/${noteId}`
   fetch(url)
@@ -99,13 +99,12 @@ function editNote (eventTarget) {
     let noteHeaderValue = noteHeader.value
     let noteBodyValue = noteBody.value
     updateNote(noteHeaderValue, noteBodyValue, noteId)
+    noteSave.classList.toggle('hideme')
+    noteUpdate.classList.toggle('hideme')
   })
 }
-// Add to above something that will generate an update note button instead of save - has a class of update for the event listener
-// event listener will call the next function called updateNote which will do the PATCH and change the innerHTML to the new value
-// update event also has to clear the note-header and note-body values to empty.
 
-// ADD THIS AS PART OF WHAT TO DO WHEN CLICK SAVE
+/* --------------------------------------- Embeds json, event listener and DOM manipulation ----------------------------------------------- */
 
 function updateNote (noteHeader, noteBody, noteId) {
   fetch(`http://localhost:3000/notes/${noteId}`, {
@@ -114,17 +113,17 @@ function updateNote (noteHeader, noteBody, noteId) {
     body: JSON.stringify({
       item: noteHeader,
       detail: noteBody,
-      modified_at: moment().format()
+      modified_at: moment().format('lll')
     })
   })
     .then(res => res.json())
     .then(data => {
       renderNote(data)
+
       // instead of rendering note here, just manipulate DOM
       console.log(data)
     })
-    noteHeader = ''
-    noteBody = ''
+  clearInputs()
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -133,7 +132,7 @@ function updateNote (noteHeader, noteBody, noteId) {
 
 function renderNote (todoObj) {
   const itemEl = document.createElement('div')
-  const itemDetail = document.createElement('div')
+  const itemDetail = document.createElement('textarea')
   const itemCreated = document.createElement('div')
   const itemModified = document.createElement('div')
 
@@ -144,11 +143,21 @@ function renderNote (todoObj) {
   itemEl.id = todoObj.id
   itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
   itemDetail.innerHTML = todoObj.detail
-  itemCreated.innerHTML = todoObj.created_at
-  itemModified.innerHTML = todoObj.modified_at
+  itemCreated.innerHTML = `Created: ${todoObj.created_at}`
+  if (todoObj.modified_at) {
+    itemModified.innerHTML = `Modified: ${todoObj.modified_at}`
+  }
 
   noteList.appendChild(itemEl)
+  // noteList.appendChild(itemDetail) -- come back to this and change how managing cards in css
+  // noteList.appendChild(itemCreated)
+  // noteList.appendChild(itemModified)
   itemEl.appendChild(itemDetail)
   itemEl.appendChild(itemCreated)
   itemEl.appendChild(itemModified)
+}
+
+function clearInputs () {
+  noteBody.value = ''
+  noteHeader.value = ''
 }
