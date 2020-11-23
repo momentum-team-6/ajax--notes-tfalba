@@ -49,18 +49,22 @@ function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemDetail = document.createElement('div')
   const itemCreated = document.createElement('div')
+  const itemModified = document.createElement('div')
   
   itemEl.classList.add('note-header')
   itemDetail.classList.add('note-body')
   itemCreated.classList.add('time-created')
+  itemModified.classList.add('time-modified')
   itemEl.id = todoObj.id
   itemEl.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
   itemDetail.innerHTML = todoObj.detail
   itemCreated.innerHTML = todoObj.created_at
+  itemModified.innerHTML = todoObj.modified_at
 
   noteList.appendChild(itemEl)
   itemEl.appendChild(itemDetail)
   itemEl.appendChild(itemCreated)
+  itemEl.appendChild(itemModified)
 }
 
 function deleteNote (eventTarget) {
@@ -123,6 +127,10 @@ function renderEdit (todoObj) {
   debugger
 }
 
+// Go back to earlier version where had listener for edit and had display up on right
+// Need some way of bringing up current version of note... pausing and allowing for
+// content to be added
+
 function editNote (noteHeader, noteBody, noteId) {
 
   console.log(noteId)
@@ -133,7 +141,8 @@ function editNote (noteHeader, noteBody, noteId) {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      item: noteHeader,
+      // item: noteHeader,
+      // try not including header so only body will change
       detail: noteBody,
       modified_at: moment().format()
     })
