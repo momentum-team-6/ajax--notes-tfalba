@@ -82,48 +82,57 @@ function deleteNote (eventTarget) {
 
 function editNote (eventTarget) {
   console.log(eventTarget.parentElement)
-  const noteId = eventTarget.parentElement.id
+  let noteId = eventTarget.parentElement.id
 
   noteSave.classList.toggle('hideme')
   noteUpdate.classList.toggle('hideme')
 
-  const url = `http://localhost:3000/notes/${noteId}`
+  let url = `http://localhost:3000/notes/${noteId}`
   fetch(url)
     .then(res => res.json())
     .then(data => {
       noteHeader.value = data.item
       noteBody.value = data.detail
     })
+
+  // Try skipping the whole bit of editNote and just working through event listener and calling updateNote
   noteUpdate.addEventListener('click', function (event) {
     event.preventDefault()
+
     let noteHeaderValue = noteHeader.value
     let noteBodyValue = noteBody.value
     updateNote(noteHeaderValue, noteBodyValue, noteId)
-    noteSave.classList.toggle('hideme')
-    noteUpdate.classList.toggle('hideme')
+
+    // clearInputs()
   })
 }
 
 /* --------------------------------------- Embeds json, event listener and DOM manipulation ----------------------------------------------- */
 
-function updateNote (noteHeader, noteBody, noteId) {
+function updateNote (noteHeaderValue, noteBodyValue, noteId) {
   fetch(`http://localhost:3000/notes/${noteId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      item: noteHeader,
-      detail: noteBody,
+      item: noteHeaderValue,
+      detail: noteBodyValue,
       modified_at: moment().format('lll')
     })
   })
     .then(res => res.json())
     .then(data => {
-      renderNote(data)
+      const note = document.getElementById(data.id)
+      note.querySelector('textarea').value = noteBodyValue
+//      note.querySelector('note-body').value = data.item
+      // renderNote(data)
 
       // instead of rendering note here, just manipulate DOM
       console.log(data)
+      // clearInputs() -- this clears out whatever previously had been set!!!
+
+      noteSave.classList.toggle('hideme')
+      noteUpdate.classList.toggle('hideme')
     })
-  clearInputs()
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
