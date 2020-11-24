@@ -89,10 +89,10 @@ h1 {
   border-radius: 7px;
 }
 
-.note-header:hover {
+/* .note-header:hover {
   background-color: rgba(100, 148, 237, 0.76);
   border: 3px solid black;
-}
+} */
 #side-bar .note-header {
   max-height: 200px;
   width: 300px;
@@ -127,6 +127,9 @@ h1 {
   text-align: right;
 }
 
+.update-me {
+  background-color: yellow;
+}
 .save-note, .update-note {
   width: 120px;
   border: 3px solid cornflowerblue;

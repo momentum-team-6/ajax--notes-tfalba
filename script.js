@@ -4,29 +4,35 @@ const noteSave = document.querySelector('.save-note')
 const noteList = document.querySelector('#note-list')
 const noteHeader = document.querySelector('#note-header')
 const noteBody = document.querySelector('#note-body')
-const sideBar = document.querySelector('#side-bar')
 const noteUpdate = document.querySelector('.update-note')
 
+let noteArray =[]
 fetch(url)
   .then(res => res.json())
   .then(notes => {
-    for (let i = notes.length - 1; i >= 0; i--) {
-      if (notes[i].item !== '') {
-        renderNote(notes[i])
-      }
+    for (let note of notes) {
+      noteArray.push(note)
     }
+    console.log(noteArray)
+    renderNotes(noteArray)
+    // for (let note of noteArray) {
+    //   if (note.item) {
+    //     renderNote(note)
+    //   }
+    // }
   })
+
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                                                   Event Listeners                                                  */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-noteSave.addEventListener('click', function (event) {
-  event.preventDefault()
-  const noteHeaderValue = noteHeader.value
-  const noteBodyValue = noteBody.value
-  createNote(noteHeaderValue, noteBodyValue)
-})
+// noteSave.addEventListener('click', function (event) {
+//   event.preventDefault()
+//   const noteHeaderValue = noteHeader.value
+//   const noteBodyValue = noteBody.value
+//   createNote(noteHeaderValue, noteBodyValue)
+// })
 
 noteList.addEventListener('click', function (event) {
   // console.log(event.target.parentElement)
@@ -38,32 +44,41 @@ noteList.addEventListener('click', function (event) {
     // Need to change editNote to take as argument event.target rather than noteId
     // this function should basically change what is viewed in display to the content of the note.
   }
-  if (event.target.classList.contains('updated')) {
-    updateNote(event.target)
-    // write a function updateNote which will run the PATCH
-  }
+})
+
+noteSave.addEventListener('click', function (event) {
+    createNote()
+
 })
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                                                    JSON Fetches                                                    */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-function createNote (noteHeader, noteBody) {
+function createNote () {
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      item: noteHeader,
-      detail: noteBody,
+      item: noteHeader.value,
+      detail: noteBody.value,
       created_at: moment().format('lll')
     })
   })
     .then(res => res.json())
     .then(data => {
-      renderNote(data)
+      noteArray.push(data)
       clearInputs()
-    })
+      renderNotes(noteArray)
+    //   noteList.innerHTML = ''
+    //   for (let note of noteArray) {
+    //     if (note.item) {
+    //       renderNote(note)
+    //     }
+    //   }
+    // })
   // document.location.reload()
+})
 }
 
 function deleteNote (eventTarget) {
@@ -76,13 +91,19 @@ function deleteNote (eventTarget) {
     .then(res => res.json())
     .then(data => {
       console.log(data)
-      eventTarget.parentElement.remove()
+      noteArray = noteArray.filter(function(note) {
+        return note.id !== parseInt(noteId, 10)
+      })
+      renderNotes(noteArray)
+
+      // eventTarget.parentElement.remove()
     })
 }
 
 function editNote (eventTarget) {
   console.log(eventTarget.parentElement)
   let noteId = eventTarget.parentElement.id
+  eventTarget.parentElement.classList.add('update-me')
 
   noteSave.classList.toggle('hideme')
   noteUpdate.classList.toggle('hideme')
@@ -110,6 +131,7 @@ function editNote (eventTarget) {
 /* --------------------------------------- Embeds json, event listener and DOM manipulation ----------------------------------------------- */
 
 function updateNote (noteHeaderValue, noteBodyValue, noteId) {
+  
   fetch(`http://localhost:3000/notes/${noteId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -164,6 +186,15 @@ function renderNote (todoObj) {
   itemEl.appendChild(itemDetail)
   itemEl.appendChild(itemCreated)
   itemEl.appendChild(itemModified)
+}
+
+function renderNotes(array) {
+  noteList.innerHTML = ''
+  for (let note of array) {
+    if (note.item) {
+      renderNote(note)
+    }
+  }
 }
 
 function clearInputs () {
