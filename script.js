@@ -6,20 +6,6 @@ const noteHeader = document.querySelector('#note-header')
 const noteBody = document.querySelector('#note-body')
 const noteUpdate = document.querySelector('.update-note')
 
-function listNotes () {
-  let noteArray = []
-  fetch(url)
-    .then(res => res.json())
-    .then(notes => {
-      for (let note of notes) {
-        noteArray.push(note)
-      }
-      console.log(noteArray)
-      renderNotes(noteArray)
-    })
-}
-
-listNotes()
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                                                   Event Listeners                                                  */
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -33,7 +19,7 @@ noteList.addEventListener('click', function (event) {
   }
   if (event.target.classList.contains('update-me')) {
     const noteId = document.querySelector('button.update-me').dataset.note
-    const element = event.target.parentElement.parentElement.parentElement
+    const element = event.target.parentElement.parentElement
     updateNote(element)
   }
 })
@@ -77,15 +63,27 @@ function deleteNote (eventTarget) {
 function editNote (eventTarget) {
   const noteId = eventTarget.parentElement.parentElement.id
   eventTarget.parentElement.parentElement.classList.add('update')
-  eventTarget.innerHTML = `<button class='update-me' data-note='${noteId}'>Update</button>`
+  const noteObj = eventTarget.parentElement.parentElement
+  const itemHeader = eventTarget.parentElement
+  const itemBody = noteObj.querySelector('.note-body')
+  itemBody.rows = '4'
+  itemBody.innerHTML = `<textarea class='body-edit'>${itemBody.innerText}</textarea>`
+  itemHeader.innerHTML = `<textarea class='header-edit'>${itemHeader.innerText}</textarea><i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i><button class='update-me' data-note='${noteId}'>Update</button>`
+
+  //  itemHeader.innerHTML = `<input type='text' class='header-edit' placeholder='${itemHeader.innerText}'><i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i><button class='update-me' data-note='${noteId}'>Update</button>`
+
+  //  eventTarget.innerHTML = `<button class='update-me' data-note='${noteId}'>Update</button>`
+  //  debugger
+
 }
 
 /* --------------------------------------- Embeds json, event listener and DOM manipulation ----------------------------------------------- */
 
 function updateNote (eventTarget) {
   const noteId = eventTarget.id
-  const body = eventTarget.querySelector('.note-body')
-  const header = eventTarget.querySelector('.note-header')
+  const body = eventTarget.querySelector('.body-edit')
+  const header = eventTarget.querySelector('.header-edit')
+  // if make div then input in render section could find a way to edit header
   // const header = eventTarget.parentElement.querySelector('note-header')
 
   fetch(`http://localhost:3000/notes/${noteId}`, {
@@ -113,9 +111,10 @@ function updateNote (eventTarget) {
 function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemHeader = document.createElement('div')
-  const itemDetail = document.createElement('textarea')
+  const itemDetail = document.createElement('div')
   const itemCreated = document.createElement('div')
   const itemModified = document.createElement('div')
+  const idValue = parseInt(todoObj.id)
 
   itemEl.classList.add('note-card')
   itemHeader.classList.add('note-header')
@@ -135,18 +134,59 @@ function renderNote (todoObj) {
   itemEl.appendChild(itemDetail)
   itemEl.appendChild(itemCreated)
   itemEl.appendChild(itemModified)
+
+  // if (idValue%24 === 0) {
+
+  if (itemDetail.innerText.includes('yellow')) {
+    //    itemDetail.classList.add('highlight')
+    itemEl.classList.add('highlight')
+    console.log(itemDetail.innerText)
+    //    itemHeader.classList.add('highlight')
+  }
 }
 
 function renderNotes (array) {
   noteList.innerHTML = ''
-  for (let note of array) {
-    if (note.item) {
-      renderNote(note)
-    }
+
+  for (let i = array.length - 1; i >= 0; i--) {
+    renderNote(array[i])
   }
+}
+
+function listNotes () {
+  const noteArray = []
+  fetch(url)
+    .then(res => res.json())
+    .then(notes => {
+      for (const note of notes) {
+        noteArray.push(note)
+      }
+      renderNotes(noteArray)
+    })
+}
+
+function filterWord (word, oldArray) {
+  const newArray = oldArray.filter((old) =>
+    (old.item.includes(word) || old.detail.includes(word)))
+  return newArray
+}
+
+function filterNotes (word) {
+  const noteArray = []
+  fetch(url)
+    .then(res => res.json())
+    .then(notes => {
+      for (const note of notes) {
+        noteArray.push(note)
+      }
+      renderNotes(filterWord(word, noteArray))
+    })
 }
 
 function clearInputs () {
   noteBody.value = ''
   noteHeader.value = ''
 }
+
+listNotes()
+// filterNotes('the')
