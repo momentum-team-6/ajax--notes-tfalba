@@ -61,20 +61,20 @@ function deleteNote (eventTarget) {
 }
 
 function editNote (eventTarget) {
-  const noteId = eventTarget.parentElement.parentElement.id
   eventTarget.parentElement.parentElement.classList.add('update')
   const noteObj = eventTarget.parentElement.parentElement
   const itemHeader = eventTarget.parentElement
   const itemBody = noteObj.querySelector('.note-body')
-  itemBody.rows = '4'
-  itemBody.innerHTML = `<textarea class='body-edit'>${itemBody.innerText}</textarea>`
-  itemHeader.innerHTML = `<textarea class='header-edit'>${itemHeader.innerText}</textarea><i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i><button class='update-me' data-note='${noteId}'>Update</button>`
+  itemBody.classList.add('body-edit')
+  itemBody.rows = '8'
+  itemBody.cols = '50'
+  const itemUpdate = document.createElement('button')
+  itemUpdate.classList.add('update-me')
+  itemUpdate.innerHTML = 'Update'
 
-  //  itemHeader.innerHTML = `<input type='text' class='header-edit' placeholder='${itemHeader.innerText}'><i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i><button class='update-me' data-note='${noteId}'>Update</button>`
+  itemHeader.appendChild(itemUpdate)
 
-  //  eventTarget.innerHTML = `<button class='update-me' data-note='${noteId}'>Update</button>`
-  //  debugger
-
+  itemHeader.classList.add('header-update')
 }
 
 /* --------------------------------------- Embeds json, event listener and DOM manipulation ----------------------------------------------- */
@@ -82,9 +82,7 @@ function editNote (eventTarget) {
 function updateNote (eventTarget) {
   const noteId = eventTarget.id
   const body = eventTarget.querySelector('.body-edit')
-  const header = eventTarget.querySelector('.header-edit')
-  // if make div then input in render section could find a way to edit header
-  // const header = eventTarget.parentElement.querySelector('note-header')
+  const header = eventTarget.querySelector('textarea')
 
   fetch(`http://localhost:3000/notes/${noteId}`, {
     method: 'PATCH',
@@ -97,8 +95,6 @@ function updateNote (eventTarget) {
   })
     .then(res => res.json())
     .then(data => {
-      // eventTarget.classList.remove('update-me')
-      // don't need this anymore???
 
       listNotes()
     })
@@ -111,18 +107,20 @@ function updateNote (eventTarget) {
 function renderNote (todoObj) {
   const itemEl = document.createElement('div')
   const itemHeader = document.createElement('div')
-  const itemDetail = document.createElement('div')
+  const itemDetail = document.createElement('textarea')
   const itemCreated = document.createElement('div')
   const itemModified = document.createElement('div')
   const idValue = parseInt(todoObj.id)
 
   itemEl.classList.add('note-card')
-  itemHeader.classList.add('note-header')
+/ itemHeader.classList.add('header-div')
   itemDetail.classList.add('note-body')
+  itemDetail.rows='8'
+
   itemCreated.classList.add('time-created')
   itemModified.classList.add('time-modified')
   itemEl.id = todoObj.id
-  itemHeader.innerHTML = `${todoObj.item}<i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
+  itemHeader.innerHTML = `<textarea class='note-header'>${todoObj.item}</textarea><i class='fas fa-times delete'></i><i class='fas fa-edit edit'></i>`
   itemDetail.innerHTML = todoObj.detail
   itemCreated.innerHTML = `Created: ${todoObj.created_at}`
   if (todoObj.modified_at) {
@@ -137,7 +135,7 @@ function renderNote (todoObj) {
 
   // if (idValue%24 === 0) {
 
-  if (itemDetail.innerText.includes('yellow')) {
+  if (itemDetail.innerHTML.includes('yellow')) {
     //    itemDetail.classList.add('highlight')
     itemEl.classList.add('highlight')
     console.log(itemDetail.innerText)
