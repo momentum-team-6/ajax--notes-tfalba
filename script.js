@@ -4,8 +4,8 @@ const noteSave = document.querySelector('.save-note')
 const noteList = document.querySelector('#note-list')
 const noteHeader = document.querySelector('#note-header')
 const noteBody = document.querySelector('#note-body')
-const noteUpdate = document.querySelector('.update-note')
-
+const sideBar = document.querySelector('#side-bar')
+const keyword = ''
 /* ------------------------------------------------------------------------------------------------------------------ */
 /*                                                   Event Listeners                                                  */
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -15,12 +15,39 @@ noteList.addEventListener('click', function (event) {
     deleteNote(event.target)
   }
   if (event.target.classList.contains('edit')) {
+    console.log('I clicked edit')
     editNote(event.target)
   }
   if (event.target.classList.contains('update-me')) {
-    const noteId = document.querySelector('button.update-me').dataset.note
     const element = event.target.parentElement.parentElement
     updateNote(element)
+  }
+})
+/* ---------------- set up event listener that identifies filter submit and runs filternotes function --------------- */
+
+sideBar.addEventListener('click', function (event) {
+  if (event.target.classList.contains('submit-filter')) {
+    const filterField = event.target.parentElement
+    const keyword = filterField.firstElementChild.value
+    filterNotes(keyword)
+  }
+  if (event.target.classList.contains('submit-highlight')) {
+    console.log('I clicked highlight submit')
+    const highlightField = event.target.parentElement
+    const keyword = highlightField.firstElementChild.value
+    listNotes(keyword)
+  }
+  if (event.target.classList.contains('clear-filter')) {
+    const keyword = ''
+    const filterField = event.target.parentElement
+    filterField.firstElementChild.value = ''
+    listNotes(keyword)
+  }
+  if (event.target.classList.contains('clear-highlight')) {
+    const keyword = ''
+    const highlightField = event.target.parentElement
+    highlightField.firstElementChild.value = ''
+    listNotes(keyword)
   }
 })
 
@@ -44,7 +71,7 @@ function createNote () {
   })
     .then(res => res.json())
     .then(data => {
-      listNotes()
+      listNotes(keyword)
       clearInputs()
     })
 }
@@ -56,7 +83,7 @@ function deleteNote (eventTarget) {
     method: 'DELETE'
   })
     .then(() => {
-      listNotes()
+      listNotes(keyword)
     })
 }
 
@@ -95,8 +122,7 @@ function updateNote (eventTarget) {
   })
     .then(res => res.json())
     .then(data => {
-
-      listNotes()
+      listNotes(keyword)
     })
 }
 
@@ -104,18 +130,19 @@ function updateNote (eventTarget) {
 /*                                                  DOM Manipulation                                                  */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-function renderNote (todoObj) {
+function renderNote (todoObj, keyword) {
   const itemEl = document.createElement('div')
   const itemHeader = document.createElement('div')
   const itemDetail = document.createElement('textarea')
   const itemCreated = document.createElement('div')
   const itemModified = document.createElement('div')
+  // save the following in case use later
   const idValue = parseInt(todoObj.id)
 
   itemEl.classList.add('note-card')
-/ itemHeader.classList.add('header-div')
+  itemHeader.classList.add('header-div')
   itemDetail.classList.add('note-body')
-  itemDetail.rows='8'
+  itemDetail.rows = '8'
 
   itemCreated.classList.add('time-created')
   itemModified.classList.add('time-modified')
@@ -133,25 +160,29 @@ function renderNote (todoObj) {
   itemEl.appendChild(itemCreated)
   itemEl.appendChild(itemModified)
 
-  // if (idValue%24 === 0) {
-
-  if (itemDetail.innerHTML.includes('yellow')) {
-    //    itemDetail.classList.add('highlight')
-    itemEl.classList.add('highlight')
-    console.log(itemDetail.innerText)
-    //    itemHeader.classList.add('highlight')
+  if (keyword !== '') {
+    if (itemDetail.innerHTML.includes(keyword)) {
+      itemEl.classList.add('highlight')
+      console.log(itemDetail.innerText)
+    }
   }
 }
 
-function renderNotes (array) {
+function renderNotes (array, keyword) {
   noteList.innerHTML = ''
-
   for (let i = array.length - 1; i >= 0; i--) {
-    renderNote(array[i])
+    renderNote(array[i], keyword)
   }
 }
 
-function listNotes () {
+// function highlightNotes (keyword) {
+//   noteList.innerHTML = ''
+//   for (let i = array.length - 1; i >= 0; i--) {
+//     highlightNote(array[i])
+//   }
+// }
+
+function listNotes (keyword) {
   const noteArray = []
   fetch(url)
     .then(res => res.json())
@@ -159,7 +190,7 @@ function listNotes () {
       for (const note of notes) {
         noteArray.push(note)
       }
-      renderNotes(noteArray)
+      renderNotes(noteArray, keyword)
     })
 }
 
@@ -169,7 +200,7 @@ function filterWord (word, oldArray) {
   return newArray
 }
 
-function filterNotes (word) {
+function filterNotes (word, keyword) {
   const noteArray = []
   fetch(url)
     .then(res => res.json())
@@ -177,7 +208,7 @@ function filterNotes (word) {
       for (const note of notes) {
         noteArray.push(note)
       }
-      renderNotes(filterWord(word, noteArray))
+      renderNotes(filterWord(word, noteArray), keyword)
     })
 }
 
@@ -186,5 +217,5 @@ function clearInputs () {
   noteHeader.value = ''
 }
 
-listNotes()
+listNotes(keyword)
 // filterNotes('the')

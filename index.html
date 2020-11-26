@@ -13,23 +13,37 @@
 <body>
   <h1>Take Note!!!</h1>
 
-  <section>
+  <section id="top-container">
     <div id = "top-section">
       <div id = "note-form">
-    <!-- <label for="note-header">Note Header</label> -->
         <div class="note-label">Note Header</div>
         <input id="note-header" type="text" placeholder="title your note here">
         <div class="note-label">Your Note</div>
-        <!-- <label for="note-body">Your Note</label> -->
         <textarea id="note-body" rows="8" cols="50" placeholder="tell me what you want to say"></textarea>
-                <div class='buttons'>
-          <div class="save-note" >Save Note</div>
-          <div class="update-note hideme">Update Note</div>
+        <div class='save-note'>Save Note</div>
+      </div>
+      <div id = "side-bar">
+        <div class="filter-label">Filter By Keyword</div>
+        <div class="filter">
+          <input id="filter-word" type="text" placeholder="keyword">
+          <div class="submit-filter">Submit</div>
+          <div class="clear-filter">Clear</div>
+        </div>
+        <div class="highlight-label">Highlight By Keyword</div>
+        <div class="highlight-keyword">
+          <input id="highlight-word" type="text" placeholder="keyword">
+          <div class="submit-highlight">Submit</div>
+          <div class="clear-highlight">Clear</div>
+        </div>
+        
+        <div class="sort-option">
+          <label for="sort">Sort by:</label>
+          <select id="sort" name="sort-options">
+            <option value="By Created">Created</option>
+            <option value="By Modified">Modified</option>
+          </select>
         </div>
       </div>
-      <!-- <div id = "side-bar"></div> -->
-
-<!-- ----------------------- add a clear note button that will reload the page when clicked ------------------------ -->
 
     <div id="section-break"></div>
   </section>
