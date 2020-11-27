@@ -166,6 +166,13 @@ function renderNote (todoObj, keyword) {
       console.log(itemDetail.innerText)
     }
   }
+
+  if (itemDetail.innerHTML.includes('green') || itemDetail.innerHTML.includes('Green')) {
+    itemEl.classList.add('green-highlight')
+  }
+  if (itemDetail.innerHTML.includes('pink') || itemDetail.innerHTML.includes('Pink')) {
+    itemEl.classList.add('pink-highlight')
+  }
 }
 
 function renderNotes (array, keyword) {

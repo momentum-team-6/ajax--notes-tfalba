@@ -6,18 +6,29 @@
 body {
   background:#333 url(https://static.tumblr.com/maopbtg/a5emgtoju/inflicted.png) repeat; 
   color: #FFF;
-  
+  display: flex;
+  flex-direction: column;
 }
 h1 {
-  font-size: 80px;
+  font-size: 95px;
   /* background-colorgba(6, 6, 7, 0.851)dd9; */
   margin: 10px 30px 30px 10px;
-  padding: 50px 0px 40px 120px;
-  height: 60px;
+  padding: 20px 0px 80px 120px;
+  height: 370px;
   color: black;
+  color: whitesmoke;
   border-bottom: 5px solid whitesmoke;
   background-image:url(https://static.tumblr.com/maopbtg/E9Bmgtoht/lines.png), url(https://static.tumblr.com/maopbtg/nBUmgtogx/paper.png);
-  background-repeat:repeat-y, repeat;
+  background-image:url("images/pexels-caryn-938165.jpg");
+  /* background-repeat:repeat-x, repeat; */
+  /* background-position: left center; */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 #top-section, #side-bar, #note-list, .note-card, #note-form, .save-note, #note-header{
@@ -87,6 +98,12 @@ h1, #side-bar, #note-list, #notes, .note-card, .update, .update-me{
   background-color: rgba(100, 148, 237, 0.789);
 
   /* background-color: #de3bffa3; */
+}
+.green-highlight {
+  background-color: rgba(58, 133, 58, 0.836);
+}
+.pink-highlight {
+  background-color: rgba(210, 77, 150, 0.919);
 }
 
 .time-created, .time-modified {
