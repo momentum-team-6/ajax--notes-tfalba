@@ -167,12 +167,12 @@ function renderNote (todoObj, keyword) {
     }
   }
 
-  if (itemDetail.innerHTML.includes('green') || itemDetail.innerHTML.includes('Green')) {
-    itemEl.classList.add('green-highlight')
-  }
-  if (itemDetail.innerHTML.includes('pink') || itemDetail.innerHTML.includes('Pink')) {
-    itemEl.classList.add('pink-highlight')
-  }
+  // if (itemDetail.innerHTML.includes('green') || itemDetail.innerHTML.includes('Green')) {
+  //   itemEl.classList.add('green-highlight')
+  // }
+  // if (itemDetail.innerHTML.includes('pink') || itemDetail.innerHTML.includes('Pink')) {
+  //   itemEl.classList.add('pink-highlight')
+  // }
 }
 
 function renderNotes (array, keyword) {
